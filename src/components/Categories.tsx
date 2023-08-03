@@ -4,6 +4,7 @@ import { useTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { API_URL } from "../api/api";
+import { useProductsContext } from "./ProductsContext";
 
 interface CategoriesProps {
   categories: string[];
@@ -12,7 +13,7 @@ interface CategoriesProps {
 const Categories = ({ categories }: CategoriesProps) => {
   const theme = useTheme();
 
-  const [products, setProducts] = useState([]);
+  const { setProducts } = useProductsContext();
 
   const fetchProducts = async (category: string) => {
     try {
@@ -20,11 +21,11 @@ const Categories = ({ categories }: CategoriesProps) => {
         `${API_URL}/products/category/${category}`
       );
       setProducts(response.data);
-      console.log(response.data);
     } catch (error) {
       console.log(error);
     }
   };
+
   return (
     <Paper
       sx={{
