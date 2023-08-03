@@ -6,9 +6,9 @@ import {
   Rating,
   Stack,
   Typography,
+  Button,
 } from "@mui/material";
 import { useProductsContext } from "./ProductsContext";
-import { FaCartArrowDown } from "react-icons/fa";
 
 const Products = () => {
   const { products } = useProductsContext();
@@ -37,21 +37,17 @@ const Products = () => {
                   <CardMedia
                     component="img"
                     height="240"
-                    image={product.image}
+                    image={product.images[0]}
                     alt={product.title}
+                    sx={{ borderRadius: 2 }}
                   />
-                  <Typography variant="h5" component="div">
+                  <Typography variant="h6" component="div">
                     {product.title}
                   </Typography>
 
                   <Typography variant="body2" color="text.secondary">
                     {product.description}
                   </Typography>
-                  <Rating
-                    name="disabled"
-                    value={product.rating.rate}
-                    disabled
-                  />
                 </Stack>
 
                 <Stack
@@ -62,7 +58,7 @@ const Products = () => {
                   <Typography variant="body2" color="green" fontSize={30}>
                     ${product.price}
                   </Typography>
-                  <FaCartArrowDown size={32} color="blue" cursor="pointer" />
+                  <Button>Order Now</Button>
                 </Stack>
               </Stack>
             </CardContent>

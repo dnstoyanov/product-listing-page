@@ -1,30 +1,53 @@
 import { Grid, Paper, Stack } from "@mui/material";
-import { v4 as uuidv4 } from "uuid";
 import { useTheme } from "@mui/material/styles";
-import { useEffect, useState } from "react";
 import axios from "axios";
-import { API_URL } from "../api/api";
+import { API_URL_2 } from "../api/api";
 import { useProductsContext } from "./ProductsContext";
+import { useEffect, useState } from "react";
 
-interface CategoriesProps {
-  categories: string[];
+interface Category {
+  createdAt: string;
+  id: number;
+  image: string;
+  name: string;
+  updatedAt: string;
 }
 
-const Categories = ({ categories }: CategoriesProps) => {
-  const theme = useTheme();
+interface CategoriesProps {
+  categories: Category[];
+  limit: number;
+}
 
+const Categories = ({ categories, limit }: CategoriesProps) => {
+  const theme = useTheme();
+  const limitedCategories = categories.slice(0, limit);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
+    null
+  );
   const { setProducts } = useProductsContext();
 
-  const fetchProducts = async (category: string) => {
+  useEffect(() => {
+    if (selectedCategoryId !== null) {
+      fetchProducts(selectedCategoryId);
+    }
+  }, [selectedCategoryId]);
+
+  const fetchProducts = async (categoryId: number) => {
     try {
-      const response = await axios.get(
-        `${API_URL}/products/category/${category}`
-      );
+      const response = await axios.get(`${API_URL_2}/${categoryId}/products`);
+      console.log(categoryId);
       setProducts(response.data);
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (limitedCategories.length > 0) {
+      const firstCategoryId = limitedCategories[0].id;
+      setSelectedCategoryId(firstCategoryId);
+    }
+  }, [limitedCategories]);
 
   return (
     <Paper
@@ -45,14 +68,14 @@ const Categories = ({ categories }: CategoriesProps) => {
       }}
     >
       <Grid container>
-        {categories.map((category: string) => (
+        {limitedCategories.map((category: Category) => (
           <Grid
             item
             xs={6}
             sm={4}
             md={3}
-            key={uuidv4()}
-            onClick={() => fetchProducts(category)}
+            key={category.id}
+            onClick={() => fetchProducts(category.id)}
           >
             <Stack
               sx={{
@@ -67,7 +90,7 @@ const Categories = ({ categories }: CategoriesProps) => {
                 },
               }}
             >
-              {category}
+              {category.name}
             </Stack>
           </Grid>
         ))}

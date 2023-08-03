@@ -2,7 +2,7 @@ import { AppBar, Toolbar } from "@mui/material";
 import logo from "../assets/logo.png";
 import Categories from "./Categories";
 import axios from "axios";
-import { API_URL } from "../api/api";
+import { API_URL_2 } from "../api/api";
 import { useEffect, useState } from "react";
 
 const Header = () => {
@@ -14,7 +14,7 @@ const Header = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get(`${API_URL}/products/categories`);
+      const response = await axios.get(`${API_URL_2}`);
       setCategories(response.data);
     } catch (error) {
       console.log(error);
@@ -25,7 +25,7 @@ const Header = () => {
       position="sticky"
       sx={{
         boxShadow: "0px 2px 2px -2px rgba(0, 0, 0, 0.2)",
-        backgroundColor: "transparent",
+        backgroundColor: "white",
       }}
     >
       <Toolbar
@@ -44,7 +44,7 @@ const Header = () => {
           }}
           alt="logo"
         />
-        <Categories categories={categories} />
+        <Categories categories={categories} limit={5} />
       </Toolbar>
     </AppBar>
   );
