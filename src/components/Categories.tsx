@@ -1,11 +1,11 @@
 import { Grid, Paper, Stack } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import axios from "axios";
-import { API_URL_2 } from "../api/api";
-import { useProductsContext } from "./ProductsContext";
+import { API_URL_2, offset, limitNum } from "../api/api";
+import { useAppContext } from "./Context";
 import { useEffect, useState } from "react";
 
-interface Category {
+export interface Category {
   createdAt: string;
   id: number;
   image: string;
@@ -24,18 +24,14 @@ const Categories = ({ categories, limit }: CategoriesProps) => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
     null
   );
-  const { setProducts } = useProductsContext();
-
-  useEffect(() => {
-    if (selectedCategoryId !== null) {
-      fetchProducts(selectedCategoryId);
-    }
-  }, [selectedCategoryId]);
+  const { setProducts } = useAppContext();
+  const { setSelectedCategory, setCurrCategoryId } = useAppContext();
 
   const fetchProducts = async (categoryId: number) => {
     try {
-      const response = await axios.get(`${API_URL_2}/${categoryId}/products`);
-      console.log(categoryId);
+      const response = await axios.get(
+        `${API_URL_2}/${categoryId}/products?offset=${offset}&limit=${limitNum}`
+      );
       setProducts(response.data);
     } catch (error) {
       console.log(error);
@@ -43,11 +39,20 @@ const Categories = ({ categories, limit }: CategoriesProps) => {
   };
 
   useEffect(() => {
-    if (limitedCategories.length > 0) {
+    if (selectedCategoryId === null && limitedCategories.length > 0) {
       const firstCategoryId = limitedCategories[0].id;
       setSelectedCategoryId(firstCategoryId);
+      setCurrCategoryId(firstCategoryId);
+      setSelectedCategory(limitedCategories[0]);
     }
-  }, [limitedCategories]);
+  }, [selectedCategoryId, limitedCategories, setSelectedCategory]);
+
+  useEffect(() => {
+    if (selectedCategoryId !== null) {
+      setCurrCategoryId(selectedCategoryId);
+      fetchProducts(selectedCategoryId);
+    }
+  }, [selectedCategoryId]);
 
   return (
     <Paper
@@ -75,7 +80,11 @@ const Categories = ({ categories, limit }: CategoriesProps) => {
             sm={4}
             md={3}
             key={category.id}
-            onClick={() => fetchProducts(category.id)}
+            onClick={() => {
+              setCurrCategoryId(category.id);
+              setSelectedCategory(category);
+              fetchProducts(category.id);
+            }}
           >
             <Stack
               sx={{

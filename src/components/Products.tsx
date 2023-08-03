@@ -3,16 +3,19 @@ import {
   CardContent,
   CardMedia,
   Grid,
-  Rating,
   Stack,
   Typography,
   Button,
 } from "@mui/material";
-import { useProductsContext } from "./ProductsContext";
+import { useAppContext } from "./Context";
 
 const Products = () => {
-  const { products } = useProductsContext();
-  console.log("products in producs.ts", products);
+  const { products } = useAppContext();
+
+  const handleAddToCart = () => {
+    alert("Product added to cart");
+  };
+
   return (
     <Grid container spacing={2}>
       {products.map((product) => (
@@ -55,10 +58,22 @@ const Products = () => {
                   direction="row"
                   justifyContent="space-between"
                 >
-                  <Typography variant="body2" color="green" fontSize={30}>
+                  <Typography variant="body2" color="#7ec33c" fontSize={30}>
                     ${product.price}
                   </Typography>
-                  <Button>Order Now</Button>
+                  <Button
+                    sx={{
+                      backgroundColor: "#1976d2",
+                      color: "white",
+                      "&:hover": {
+                        backgroundColor: "#1565c0",
+                        cursor: "pointer",
+                      },
+                    }}
+                    onClick={() => handleAddToCart()}
+                  >
+                    Order Now
+                  </Button>
                 </Stack>
               </Stack>
             </CardContent>

@@ -4,17 +4,17 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Header from "./components/Header";
 import ProductsPage from "./components/ProductsPage";
 import { CssBaseline } from "@mui/material";
-import { ProductsProvider } from "./components/ProductsContext";
+import { AppContextProvider } from "./components/Context";
 
 const theme = createTheme();
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <ProductsProvider>
+      <AppContextProvider>
         <Header />
         <ProductsPage />
-      </ProductsProvider>
+      </AppContextProvider>
     </ThemeProvider>
   );
 }

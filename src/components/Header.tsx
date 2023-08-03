@@ -3,10 +3,11 @@ import logo from "../assets/logo.png";
 import Categories from "./Categories";
 import axios from "axios";
 import { API_URL_2 } from "../api/api";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useAppContext } from "./Context";
 
 const Header = () => {
-  const [categories, setCategories] = useState([]);
+  const { categories, setCategories } = useAppContext();
 
   useEffect(() => {
     fetchCategories();
