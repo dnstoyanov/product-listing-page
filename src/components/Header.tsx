@@ -1,4 +1,4 @@
-import { AppBar, Toolbar } from "@mui/material";
+import { AppBar, Stack, Toolbar, useMediaQuery, useTheme } from "@mui/material";
 import logo from "../assets/logo.png";
 import Categories from "./Categories";
 import axios from "axios";
@@ -8,6 +8,8 @@ import { useAppContext } from "./Context";
 
 const Header = () => {
   const { categories, setCategories } = useAppContext();
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
     fetchCategories();
@@ -21,6 +23,19 @@ const Header = () => {
       console.log(error);
     }
   };
+
+  const toolbarStyles = {
+    display: "flex",
+    justifyContent: "space-between",
+    padding: "0px !important",
+  };
+
+  const categoryMenuStyles = {
+    display: "flex",
+    marginRight: "20px",
+    width: isSmallScreen ? undefined : "100%",
+  };
+
   return (
     <AppBar
       position="sticky"
@@ -29,12 +44,7 @@ const Header = () => {
         backgroundColor: "white",
       }}
     >
-      <Toolbar
-        sx={{
-          alignItems: "flex-end",
-          padding: "0px !important",
-        }}
-      >
+      <Toolbar sx={toolbarStyles}>
         <img
           src={logo}
           style={{
@@ -45,7 +55,9 @@ const Header = () => {
           }}
           alt="logo"
         />
-        <Categories categories={categories} limit={5} />
+        <Stack sx={categoryMenuStyles}>
+          <Categories categories={categories} limit={5} />
+        </Stack>
       </Toolbar>
     </AppBar>
   );

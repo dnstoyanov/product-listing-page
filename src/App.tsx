@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import ProductsPage from "./components/ProductsPage";
 import { CssBaseline } from "@mui/material";
 import { AppContextProvider } from "./components/Context";
+import Footer from "./components/Footer";
 
 const theme = createTheme();
 function App() {
@@ -15,6 +16,7 @@ function App() {
         <Header />
         <ProductsPage />
       </AppContextProvider>
+      <Footer />
     </ThemeProvider>
   );
 }

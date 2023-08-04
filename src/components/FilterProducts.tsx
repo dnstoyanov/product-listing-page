@@ -44,10 +44,6 @@ const FilterProducts: React.FC<FilterProps> = ({ onFilter }) => {
     onFilter(titleFilter, minPrice, maxPrice);
   };
 
-  const handleClearFilterClick = () => {
-    console.log("cleared");
-  };
-
   return (
     <Grid
       container
@@ -115,23 +111,6 @@ const FilterProducts: React.FC<FilterProps> = ({ onFilter }) => {
           }}
         >
           Apply Filter
-        </Button>
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <Button
-          variant="contained"
-          sx={{
-            backgroundColor: "#757575",
-            boxShadow: "none",
-            "&:hover": {
-              backgroundColor: "#55911b",
-              boxShadow: "none",
-            },
-          }}
-          onClick={handleClearFilterClick}
-          fullWidth
-        >
-          Clear Filter
         </Button>
       </Grid>
     </Grid>
