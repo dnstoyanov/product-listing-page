@@ -109,61 +109,67 @@ const ProductsPage = () => {
       </Grid>
 
       <Grid item xs={12} md={9}>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
-            <CategoryDescription />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Stack spacing={1} direction="row">
-              <Typography variant="body1" color="primary">
-                {filteredProducts.length} Products
-              </Typography>
-              {allProdCount !== null && (
-                <Typography variant="body1" color="secondary">
-                  ({allProdCount} Total)
+        <Grid
+          container
+          spacing={2}
+          alignItems="center"
+          justifyContent="space-between"
+          marginBottom={5}
+        >
+          <Grid item xs={12} sm={4}>
+            <Grid item xs={12}>
+              <CategoryDescription />
+            </Grid>
+            <Grid item xs={12}>
+              <Stack spacing={1} direction="row">
+                <Typography variant="body1" color="primary">
+                  {filteredProducts.length} Products
                 </Typography>
-              )}
-            </Stack>
+                {allProdCount !== null && (
+                  <Typography variant="body1" color="secondary">
+                    ({allProdCount} Total)
+                  </Typography>
+                )}
+              </Stack>
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={6}>
+
+          <Grid item xs={12} sm={4}>
             <SortField
               sortingOption={sortingOption}
               onSortChange={handleSortChange}
             />
           </Grid>
+        </Grid>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Products filteredProducts={filteredProducts} />
+          </Grid>
           <Grid
             item
             xs={12}
-            sx={{ justifyContent: "center", alignItems: "center" }}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
           >
-            <Products filteredProducts={filteredProducts} />
+            {filteredProducts.length !== allProdCount && (
+              <Button
+                sx={{
+                  backgroundColor: "#92c736",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "#55911b",
+                    cursor: "pointer",
+                  },
+                }}
+                onClick={() => handleLoadMore()}
+              >
+                Load More
+              </Button>
+            )}
           </Grid>
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          sx={{
-            padding: 10,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          {filteredProducts.length !== allProdCount && (
-            <Button
-              sx={{
-                backgroundColor: "#92c736",
-                color: "white",
-                "&:hover": {
-                  backgroundColor: "#55911b",
-                  cursor: "pointer",
-                },
-              }}
-              onClick={() => handleLoadMore()}
-            >
-              Load More
-            </Button>
-          )}
         </Grid>
       </Grid>
     </Grid>

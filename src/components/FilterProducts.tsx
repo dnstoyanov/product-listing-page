@@ -54,7 +54,7 @@ const FilterProducts: React.FC<FilterProps> = ({ onFilter }) => {
       spacing={2}
       paddingLeft={3}
       paddingRight={3}
-      paddingTop={4.3}
+      paddingTop="83px"
     >
       <Grid item xs={12} marginBottom={5}>
         <Typography>Filter by title:</Typography>

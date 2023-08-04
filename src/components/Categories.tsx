@@ -77,7 +77,7 @@ const Categories = ({ categories, limit }: CategoriesProps) => {
               padding: "10px",
               textTransform: "capitalize",
               "&:hover": {
-                backgroundColor: "black",
+                backgroundColor: "#1976d2",
                 color: "white",
               },
             }}
