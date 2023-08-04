@@ -17,47 +17,49 @@ const Footer = () => {
   return (
     <Box
       sx={{
-        backgroundColor: "primary.main",
+        backgroundColor: theme.palette.primary.main,
         padding: 2,
         color: "common.white",
         marginTop: "auto",
       }}
     >
-      <Grid container justifyContent="space-between" alignItems="center">
-        <Grid
-          item
-          xs={12}
-          md={6}
-          sx={{ textAlign: isSmallScreen ? "center" : "left" }}
-        >
-          <Typography variant="body1" color="inherit">
-            © {new Date().getFullYear()} Your Company Name
-          </Typography>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Typography
-            variant="body1"
-            color="inherit"
-            sx={{
-              textAlign: isSmallScreen ? "center" : "right",
-              marginTop: isSmallScreen ? "10px" : undefined,
-            }}
+      <Container>
+        <Grid container justifyContent="space-between" alignItems="center">
+          <Grid
+            item
+            xs={12}
+            md={6}
+            sx={{ textAlign: isSmallScreen ? "center" : "left" }}
           >
-            <Link href="/" sx={{ color: "common.white", p: 1 }}>
-              About Us
-            </Link>
-            <Link href="/" sx={{ color: "common.white", p: 1 }}>
-              T&amp;C
-            </Link>
-            <Link href="/" sx={{ color: "common.white", p: 1 }}>
-              Privacy Policy
-            </Link>
-            <Link href="/" sx={{ color: "common.white", p: 1 }}>
-              Contact Us
-            </Link>
-          </Typography>
+            <Typography variant="body1" color="inherit">
+              © {new Date().getFullYear()} Your Company Name
+            </Typography>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Typography
+              variant="body1"
+              color="inherit"
+              sx={{
+                textAlign: isSmallScreen ? "center" : "right",
+                marginTop: isSmallScreen ? "10px" : undefined,
+              }}
+            >
+              <Link href="/" sx={{ color: "common.white", p: 1 }}>
+                About Us
+              </Link>
+              <Link href="/" sx={{ color: "common.white", p: 1 }}>
+                T&amp;C
+              </Link>
+              <Link href="/" sx={{ color: "common.white", p: 1 }}>
+                Privacy Policy
+              </Link>
+              <Link href="/" sx={{ color: "common.white", p: 1 }}>
+                Contact Us
+              </Link>
+            </Typography>
+          </Grid>
         </Grid>
-      </Grid>
+      </Container>
     </Box>
   );
 };

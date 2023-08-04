@@ -3,7 +3,14 @@ import Products from "./Products";
 import SortField from "./SortField";
 import CategoryDescription from "./CategoryDescription";
 import FilterProducts from "./FilterProducts";
-import { Button, Grid, Stack, Typography } from "@mui/material";
+import {
+  Button,
+  Grid,
+  Stack,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { API_URL_2, limitNum } from "../api/api";
 import axios from "axios";
 import { Product, useAppContext } from "./Context";
@@ -26,6 +33,9 @@ const ProductsPage = () => {
   const [minPriceFilter, setMinPriceFilter] = useState<number>(0);
   const [maxPriceFilter, setMaxPriceFilter] = useState<number>(3000);
   const [titleFilter, setTitleFilter] = useState<string>("");
+  const theme = useTheme();
+
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   useEffect(() => {
     setlistOfProducts(products);
@@ -103,7 +113,17 @@ const ProductsPage = () => {
   };
 
   return (
-    <Grid container sx={{ marginTop: 4, padding: 3 }}>
+    <Grid
+      container
+      sx={{
+        marginTop: 4,
+        padding: 3,
+        height: "100%",
+        display: "flex",
+        flexWrap: "wrap",
+        overflowY: "auto",
+      }}
+    >
       <Grid item xs={12} md={3}>
         <FilterProducts onFilter={handlePriceFilter} />
       </Grid>
@@ -115,6 +135,7 @@ const ProductsPage = () => {
           alignItems="center"
           justifyContent="space-between"
           marginBottom={5}
+          sx={{ marginTop: isSmallScreen ? 4 : undefined }}
         >
           <Grid item xs={12} sm={4}>
             <Grid item xs={12}>
@@ -158,6 +179,8 @@ const ProductsPage = () => {
               <Button
                 sx={{
                   backgroundColor: "#92c736",
+                  marginTop: 5,
+                  marginBottom: 5,
                   color: "white",
                   "&:hover": {
                     backgroundColor: "#55911b",
