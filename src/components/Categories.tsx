@@ -37,14 +37,16 @@ const Categories = ({ categories, limit }: CategoriesProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const fetchProducts = async (categoryId: number) => {
-    try {
-      const response = await axios.get(
-        `${API_URL_2}/${categoryId}/products?offset=${offset}&limit=${limitNum}`
-      );
-      setProducts(response.data);
-    } catch (error) {
-      console.log(error);
+  const fetchProducts = async (categoryId: number | null) => {
+    if (categoryId !== null) {
+      try {
+        const response = await axios.get(
+          `${API_URL_2}/${categoryId}/products?offset=${offset}&limit=${limitNum}`
+        );
+        setProducts(response.data);
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 

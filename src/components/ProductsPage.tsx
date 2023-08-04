@@ -4,8 +4,11 @@ import SortField from "./SortField";
 import CategoryDescription from "./CategoryDescription";
 import FilterProducts from "./FilterProducts";
 import {
+  Box,
   Button,
+  CircularProgress,
   Grid,
+  LinearProgress,
   Stack,
   Typography,
   useMediaQuery,
@@ -33,6 +36,8 @@ const ProductsPage = () => {
   const [minPriceFilter, setMinPriceFilter] = useState<number>(0);
   const [maxPriceFilter, setMaxPriceFilter] = useState<number>(3000);
   const [titleFilter, setTitleFilter] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const theme = useTheme();
 
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -71,18 +76,23 @@ const ProductsPage = () => {
   );
 
   const handleLoadMore = async () => {
-    setOffset(offset + 10);
-    try {
-      const response = await axios.get<Product[]>(
-        `${API_URL_2}/${currCategoryId}/products?offset=${offset}&limit=${limitNum}`
-      );
+    if (currCategoryId !== null) {
+      try {
+        setOffset(offset + 10);
+        setIsLoading(true);
+        const response = await axios.get<Product[]>(
+          `${API_URL_2}/${currCategoryId}/products?offset=${offset}&limit=${limitNum}`
+        );
 
-      const newProducts = response.data.filter((value, index, self) => {
-        return self.findIndex((product) => product.id === value.id) === index;
-      });
-      setlistOfProducts((prevProducts) => [...prevProducts, ...newProducts]);
-    } catch (error) {
-      console.log(error);
+        const newProducts = response.data.filter((value, index, self) => {
+          return self.findIndex((product) => product.id === value.id) === index;
+        });
+        setlistOfProducts((prevProducts) => [...prevProducts, ...newProducts]);
+        setIsLoading(false);
+      } catch (error) {
+        console.log(error);
+        setIsLoading(false);
+      }
     }
   };
 
@@ -91,14 +101,16 @@ const ProductsPage = () => {
   }, [currCategoryId]);
 
   const fetchProductCountByCategory = async (currCategoryId: number) => {
-    try {
-      const response = await axios.get<Product[]>(
-        `${API_URL_2}/${currCategoryId}/products`
-      );
-      const totalProductCount = response.data.length;
-      setAllProdCount(totalProductCount);
-    } catch (error) {
-      console.log(error);
+    if (currCategoryId !== null) {
+      try {
+        const response = await axios.get<Product[]>(
+          `${API_URL_2}/${currCategoryId}/products`
+        );
+        const totalProductCount = response.data.length;
+        setAllProdCount(totalProductCount);
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -176,22 +188,39 @@ const ProductsPage = () => {
             }}
           >
             {filteredProducts.length !== allProdCount && (
-              <Button
-                sx={{
-                  backgroundColor: "#92c736",
-                  marginTop: 5,
-                  marginBottom: 5,
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "#55911b",
-                    cursor: "pointer",
-                  },
-                }}
-                onClick={() => handleLoadMore()}
-              >
-                Load More
-              </Button>
+              <Box sx={{ m: 1, position: "relative" }}>
+                <Button
+                  disabled={isLoading ? true : false}
+                  sx={{
+                    backgroundColor: isLoading ? "gray" : "#92c736",
+                    marginTop: 5,
+                    marginBottom: 5,
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "#55911b",
+                      cursor: "pointer",
+                    },
+                  }}
+                  onClick={() => handleLoadMore()}
+                >
+                  Load More
+                </Button>
+                {isLoading && (
+                  <CircularProgress
+                    size={24}
+                    sx={{
+                      color: "#1976d2",
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      marginTop: "-12px",
+                      marginLeft: "-12px",
+                    }}
+                  />
+                )}
+              </Box>
             )}
+            <Box sx={{ m: 1, position: "relative" }}></Box>
           </Grid>
         </Grid>
       </Grid>
