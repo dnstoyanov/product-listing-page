@@ -7,18 +7,20 @@ import {
   Typography,
   Button,
 } from "@mui/material";
-import { useAppContext } from "./Context";
+import { Product, useAppContext } from "./Context";
 
-const Products = () => {
-  const { products } = useAppContext();
+interface ProductsProps {
+  filteredProducts: Product[];
+}
 
+const Products: React.FC<ProductsProps> = ({ filteredProducts }) => {
   const handleAddToCart = () => {
     alert("Product added to cart");
   };
 
   return (
     <Grid container spacing={2}>
-      {products.map((product) => (
+      {filteredProducts.map((product) => (
         <Grid key={product.id} item xs={12} sm={6} md={4} xl={2}>
           <Card
             sx={{

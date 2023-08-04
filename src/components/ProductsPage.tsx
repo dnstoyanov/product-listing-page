@@ -8,10 +8,25 @@ import { API_URL_2, limitNum } from "../api/api";
 import axios from "axios";
 import { Product, useAppContext } from "./Context";
 
+const SortingOptions = {
+  ALPHABETICAL_A_TO_Z: "ALPHABETICAL_A_TO_Z",
+  ALPHABETICAL_Z_TO_A: "ALPHABETICAL_Z_TO_A",
+  PRICE_ASCENDING: "PRICE_ASCENDING",
+  PRICE_DESCENDING: "PRICE_DESCENDING",
+};
+
 const ProductsPage = () => {
-  const { products, setProducts, currCategoryId } = useAppContext();
+  const { products, currCategoryId } = useAppContext();
   const [offset, setOffset] = useState(10);
   const [allProdCount, setAllProdCount] = useState<number | null>(null);
+  const [sortingOption, setSortingOption] = useState<string>(
+    SortingOptions.ALPHABETICAL_A_TO_Z
+  );
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
+
+  useEffect(() => {
+    setFilteredProducts(products);
+  }, [products]);
 
   useEffect(() => {
     fetchProductCountByCategory(currCategoryId!);
@@ -23,10 +38,31 @@ const ProductsPage = () => {
         `${API_URL_2}/${currCategoryId}/products`
       );
       const totalProductCount = response.data.length;
-      console.log("totalProductCount", totalProductCount);
       setAllProdCount(totalProductCount);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const handleSortChange = (selectedOption: string) => {
+    setSortingOption(selectedOption);
+    setFilteredProducts((prevProducts) =>
+      sortProducts(prevProducts, selectedOption)
+    );
+  };
+
+  const sortProducts = (filteredProducts: Product[], sortingOption: string) => {
+    switch (sortingOption) {
+      case SortingOptions.ALPHABETICAL_A_TO_Z:
+        return filteredProducts.sort((a, b) => a.title.localeCompare(b.title));
+      case SortingOptions.ALPHABETICAL_Z_TO_A:
+        return filteredProducts.sort((a, b) => b.title.localeCompare(a.title));
+      case SortingOptions.PRICE_ASCENDING:
+        return filteredProducts.sort((a, b) => a.price - b.price);
+      case SortingOptions.PRICE_DESCENDING:
+        return filteredProducts.sort((a, b) => b.price - a.price);
+      default:
+        return filteredProducts;
     }
   };
 
@@ -40,7 +76,7 @@ const ProductsPage = () => {
       const newProducts = response.data.filter((value, index, self) => {
         return self.findIndex((product) => product.id === value.id) === index;
       });
-      setProducts((prevProducts) => [...prevProducts, ...newProducts]);
+      setFilteredProducts((prevProducts) => [...prevProducts, ...newProducts]);
     } catch (error) {
       console.log(error);
     }
@@ -70,14 +106,17 @@ const ProductsPage = () => {
             </Stack>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <SortField />
+            <SortField
+              sortingOption={sortingOption}
+              onSortChange={handleSortChange}
+            />
           </Grid>
           <Grid
             item
             xs={12}
             sx={{ justifyContent: "center", alignItems: "center" }}
           >
-            <Products />
+            <Products filteredProducts={filteredProducts} />
           </Grid>
         </Grid>
         <Grid
