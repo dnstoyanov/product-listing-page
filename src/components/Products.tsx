@@ -7,7 +7,7 @@ import {
   Typography,
   Button,
 } from "@mui/material";
-import { Product, useAppContext } from "./Context";
+import { Product } from "./Context";
 
 interface ProductsProps {
   filteredProducts: Product[];

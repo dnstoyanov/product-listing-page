@@ -55,56 +55,38 @@ const Categories = ({ categories, limit }: CategoriesProps) => {
   }, [selectedCategoryId]);
 
   return (
-    <Paper
-      sx={{
-        padding: "15px",
-        borderRadius: 0,
-        boxShadow: 0,
-        width: "100%",
-        [theme.breakpoints.up("sm")]: {
-          width: "400px",
-        },
-        [theme.breakpoints.up("md")]: {
-          width: "600px",
-        },
-        [theme.breakpoints.up("lg")]: {
-          width: "800px",
-        },
-      }}
-    >
-      <Grid container>
-        {limitedCategories.map((category: Category) => (
-          <Grid
-            item
-            xs={6}
-            sm={4}
-            md={3}
-            key={category.id}
-            onClick={() => {
-              setCurrCategoryId(category.id);
-              setSelectedCategory(category);
-              fetchProducts(category.id);
+    <Grid container>
+      {limitedCategories.map((category: Category) => (
+        <Grid
+          item
+          xs={12}
+          sm={3}
+          md={2}
+          key={category.id}
+          onClick={() => {
+            setCurrCategoryId(category.id);
+            setSelectedCategory(category);
+            fetchProducts(category.id);
+          }}
+        >
+          <Stack
+            sx={{
+              textAlign: "center",
+              color: "black",
+              cursor: "pointer",
+              padding: "10px",
+              textTransform: "capitalize",
+              "&:hover": {
+                backgroundColor: "black",
+                color: "white",
+              },
             }}
           >
-            <Stack
-              sx={{
-                textAlign: "center",
-                color: "black",
-                cursor: "pointer",
-                padding: "10px",
-                textTransform: "capitalize",
-                "&:hover": {
-                  backgroundColor: "black",
-                  color: "white",
-                },
-              }}
-            >
-              {category.name}
-            </Stack>
-          </Grid>
-        ))}
-      </Grid>
-    </Paper>
+            {category.name}
+          </Stack>
+        </Grid>
+      ))}
+    </Grid>
   );
 };
 

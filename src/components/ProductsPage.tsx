@@ -22,11 +22,59 @@ const ProductsPage = () => {
   const [sortingOption, setSortingOption] = useState<string>(
     SortingOptions.ALPHABETICAL_A_TO_Z
   );
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
+  const [listOfProducts, setlistOfProducts] = useState<Product[]>(products);
+  const [minPriceFilter, setMinPriceFilter] = useState<number>(0);
+  const [maxPriceFilter, setMaxPriceFilter] = useState<number>(3000);
+  const [titleFilter, setTitleFilter] = useState<string>("");
 
   useEffect(() => {
-    setFilteredProducts(products);
+    setlistOfProducts(products);
   }, [products]);
+
+  const handleSortChange = (selectedOption: string) => {
+    setSortingOption(selectedOption);
+  };
+
+  const sortProducts = (products: Product[], sortingOption: string) => {
+    switch (sortingOption) {
+      case SortingOptions.ALPHABETICAL_A_TO_Z:
+        return products.sort((a, b) => a.title.localeCompare(b.title));
+      case SortingOptions.ALPHABETICAL_Z_TO_A:
+        return products.sort((a, b) => b.title.localeCompare(a.title));
+      case SortingOptions.PRICE_ASCENDING:
+        return products.sort((a, b) => a.price - b.price);
+      case SortingOptions.PRICE_DESCENDING:
+        return products.sort((a, b) => b.price - a.price);
+      default:
+        return products;
+    }
+  };
+  const filteredProducts = sortProducts(
+    listOfProducts.filter(
+      (product) =>
+        product.price >= minPriceFilter &&
+        product.price <= maxPriceFilter &&
+        (titleFilter === "" ||
+          product.title.toLowerCase().includes(titleFilter.toLowerCase()))
+    ),
+    sortingOption
+  );
+
+  const handleLoadMore = async () => {
+    setOffset(offset + 10);
+    try {
+      const response = await axios.get<Product[]>(
+        `${API_URL_2}/${currCategoryId}/products?offset=${offset}&limit=${limitNum}`
+      );
+
+      const newProducts = response.data.filter((value, index, self) => {
+        return self.findIndex((product) => product.id === value.id) === index;
+      });
+      setlistOfProducts((prevProducts) => [...prevProducts, ...newProducts]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     fetchProductCountByCategory(currCategoryId!);
@@ -44,48 +92,20 @@ const ProductsPage = () => {
     }
   };
 
-  const handleSortChange = (selectedOption: string) => {
-    setSortingOption(selectedOption);
-    setFilteredProducts((prevProducts) =>
-      sortProducts(prevProducts, selectedOption)
-    );
-  };
-
-  const sortProducts = (filteredProducts: Product[], sortingOption: string) => {
-    switch (sortingOption) {
-      case SortingOptions.ALPHABETICAL_A_TO_Z:
-        return filteredProducts.sort((a, b) => a.title.localeCompare(b.title));
-      case SortingOptions.ALPHABETICAL_Z_TO_A:
-        return filteredProducts.sort((a, b) => b.title.localeCompare(a.title));
-      case SortingOptions.PRICE_ASCENDING:
-        return filteredProducts.sort((a, b) => a.price - b.price);
-      case SortingOptions.PRICE_DESCENDING:
-        return filteredProducts.sort((a, b) => b.price - a.price);
-      default:
-        return filteredProducts;
-    }
-  };
-
-  const handleLoadMore = async () => {
-    setOffset(offset + 10);
-    try {
-      const response = await axios.get<Product[]>(
-        `${API_URL_2}/${currCategoryId}/products?offset=${offset}&limit=${limitNum}`
-      );
-
-      const newProducts = response.data.filter((value, index, self) => {
-        return self.findIndex((product) => product.id === value.id) === index;
-      });
-      setFilteredProducts((prevProducts) => [...prevProducts, ...newProducts]);
-    } catch (error) {
-      console.log(error);
-    }
+  const handlePriceFilter = (
+    titleFilter: string,
+    minPrice: number,
+    maxPrice: number
+  ) => {
+    setTitleFilter(titleFilter);
+    setMinPriceFilter(minPrice);
+    setMaxPriceFilter(maxPrice);
   };
 
   return (
-    <Grid container sx={{ marginTop: 4 }}>
+    <Grid container sx={{ marginTop: 4, padding: 3 }}>
       <Grid item xs={12} md={3}>
-        <FilterProducts />
+        <FilterProducts onFilter={handlePriceFilter} />
       </Grid>
 
       <Grid item xs={12} md={9}>
@@ -96,7 +116,7 @@ const ProductsPage = () => {
           <Grid item xs={12} sm={6}>
             <Stack spacing={1} direction="row">
               <Typography variant="body1" color="primary">
-                {products.length} Products
+                {filteredProducts.length} Products
               </Typography>
               {allProdCount !== null && (
                 <Typography variant="body1" color="secondary">
@@ -129,19 +149,21 @@ const ProductsPage = () => {
             alignItems: "center",
           }}
         >
-          <Button
-            sx={{
-              backgroundColor: "#92c736",
-              color: "white",
-              "&:hover": {
-                backgroundColor: "#55911b",
-                cursor: "pointer",
-              },
-            }}
-            onClick={() => handleLoadMore()}
-          >
-            Load More
-          </Button>
+          {filteredProducts.length !== allProdCount && (
+            <Button
+              sx={{
+                backgroundColor: "#92c736",
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "#55911b",
+                  cursor: "pointer",
+                },
+              }}
+              onClick={() => handleLoadMore()}
+            >
+              Load More
+            </Button>
+          )}
         </Grid>
       </Grid>
     </Grid>
