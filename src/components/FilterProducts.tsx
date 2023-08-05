@@ -1,7 +1,6 @@
-import React, { useState } from "react";
 import {
   TextField,
-  Button,
+  // Button,
   Slider,
   Grid,
   Box,
@@ -65,9 +64,9 @@ const FilterProducts: React.FC<FilterProps> = ({ onFilter, filterOptions }) => {
     }
   };
 
-  const handleApplyFilterClick = () => {
-    onFilter(titleFilter, minPrice, maxPrice);
-  };
+  // const handleApplyFilterClick = () => {
+  //   onFilter(titleFilter, minPrice, maxPrice);
+  // };
 
   return (
     <Grid
