@@ -1,8 +1,8 @@
 import axios from "axios";
 import { Product } from "../components/Context";
 
-export const API_URL = "https://fakestoreapi.com";
-export const API_URL_2 = "https://api.escuelajs.co/api/v1/categories";
+export const API_URL = "https://api.escuelajs.co/api/v1/categories";
+// export const API_URL = "http://demo2132157.mockable.io/api/v1/categories";
 export const limitNum = 10;
 export const offset = 0;
 
@@ -14,8 +14,11 @@ export const fetchProducts = async (
   if (categoryId !== null) {
     try {
       const response = await axios.get(
-        `${API_URL_2}/${categoryId}/products?offset=${offset}&limit=${limitNum}`
+        `${API_URL}/${categoryId}/products?offset=${offset}&limit=${limitNum}`
       );
+
+      console.log(response.data);
+
       return response.data;
     } catch (error) {
       console.log(error);
@@ -25,7 +28,9 @@ export const fetchProducts = async (
 
 export const fetchCategories = async () => {
   try {
-    const response = await axios.get(`${API_URL_2}`);
+    const response = await axios.get(`${API_URL}`);
+    console.log(response.data);
+
     return response.data;
   } catch (error) {
     console.log(error);
@@ -36,7 +41,7 @@ export const fetchProductCountByCategory = async (currCategoryId: number) => {
   if (currCategoryId !== null) {
     try {
       const response = await axios.get<Product[]>(
-        `${API_URL_2}/${currCategoryId}/products`
+        `${API_URL}/${currCategoryId}/products`
       );
       return response.data;
     } catch (error) {

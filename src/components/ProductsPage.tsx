@@ -13,7 +13,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { API_URL_2, fetchProductCountByCategory, limitNum } from "../api/api";
+import { API_URL, fetchProductCountByCategory, limitNum } from "../api/api";
 import axios from "axios";
 import { Product, useAppContext } from "./Context";
 
@@ -26,7 +26,7 @@ const SortingOptions = {
 
 const ProductsPage = () => {
   const { products, currCategoryId } = useAppContext();
-  const [offset, setOffset] = useState(10);
+  const [offset, setOffset] = useState(1);
   const [allProdCount, setAllProdCount] = useState<number | null>(null);
   const [sortingOption, setSortingOption] = useState<string>(
     SortingOptions.ALPHABETICAL_A_TO_Z
@@ -107,10 +107,11 @@ const ProductsPage = () => {
   const handleLoadMore = async () => {
     if (currCategoryId !== null) {
       try {
-        setOffset(offset + 10);
+        setOffset(offset + 1);
         setIsLoading(true);
+        console.log("fff");
         const response = await axios.get<Product[]>(
-          `${API_URL_2}/${currCategoryId}/products?offset=${offset}&limit=${limitNum}`
+          `${API_URL}/${currCategoryId}/products?offset=${offset}&limit=${limitNum}`
         );
 
         const newProducts = response.data.filter((value, index, self) => {
