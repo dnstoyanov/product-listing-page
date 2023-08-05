@@ -20,9 +20,15 @@ interface ContextType {
   setCategories: React.Dispatch<React.SetStateAction<Category[]>>;
   selectedCategory: Category | null;
   setSelectedCategory: React.Dispatch<React.SetStateAction<Category | null>>;
+  offset: number;
+  setOffset: React.Dispatch<React.SetStateAction<number>>;
 }
 
+export const initialOffsetValue = 10;
+
 export const AppContext = createContext<ContextType>({
+  offset: 1,
+  setOffset: () => {},
   products: [],
   currCategoryId: null,
   setCurrCategoryId: () => {},
@@ -44,6 +50,7 @@ export const AppContextProvider: React.FC<{ children: ReactNode }> = ({
     null
   );
   const [currCategoryId, setCurrCategoryId] = useState<number | null>(null);
+  const [offset, setOffset] = useState<number>(initialOffsetValue);
 
   return (
     <AppContext.Provider
@@ -56,6 +63,8 @@ export const AppContextProvider: React.FC<{ children: ReactNode }> = ({
         setSelectedCategory,
         currCategoryId,
         setCurrCategoryId,
+        offset,
+        setOffset,
       }}
     >
       {children}

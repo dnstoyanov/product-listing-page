@@ -9,7 +9,7 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import { useTheme } from "@mui/material/styles";
 import { fetchProducts } from "../api/api";
-import { useAppContext } from "./Context";
+import { useAppContext, initialOffsetValue } from "./Context";
 import { useEffect, useRef, useState } from "react";
 
 export interface Category {
@@ -31,8 +31,8 @@ const Categories = ({ categories, limit }: CategoriesProps) => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
     null
   );
-  const { setProducts } = useAppContext();
-  const { setSelectedCategory, setCurrCategoryId } = useAppContext();
+  const { setSelectedCategory, setCurrCategoryId, setOffset, setProducts } =
+    useAppContext();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -73,6 +73,7 @@ const Categories = ({ categories, limit }: CategoriesProps) => {
   const handleCategoryClick = (categoryId: number, category: Category) => {
     setCurrCategoryId(categoryId);
     setSelectedCategory(category);
+    setOffset(initialOffsetValue);
     fetchProductsRef
       .current(categoryId)
       .then((data) => setProducts(data!))

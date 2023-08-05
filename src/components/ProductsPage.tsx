@@ -25,8 +25,7 @@ const SortingOptions = {
 };
 
 const ProductsPage = () => {
-  const { products, currCategoryId } = useAppContext();
-  const [offset, setOffset] = useState(1);
+  const { products, currCategoryId, offset, setOffset } = useAppContext();
   const [allProdCount, setAllProdCount] = useState<number | null>(null);
   const [sortingOption, setSortingOption] = useState<string>(
     SortingOptions.ALPHABETICAL_A_TO_Z
@@ -107,7 +106,7 @@ const ProductsPage = () => {
   const handleLoadMore = async () => {
     if (currCategoryId !== null) {
       try {
-        setOffset(offset + 1);
+        setOffset(offset + 10);
         setIsLoading(true);
         console.log("fff");
         const response = await axios.get<Product[]>(
