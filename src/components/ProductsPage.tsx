@@ -8,13 +8,12 @@ import {
   Button,
   CircularProgress,
   Grid,
-  LinearProgress,
   Stack,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { API_URL_2, limitNum } from "../api/api";
+import { API_URL_2, fetchProductCountByCategory, limitNum } from "../api/api";
 import axios from "axios";
 import { Product, useAppContext } from "./Context";
 
@@ -33,10 +32,14 @@ const ProductsPage = () => {
     SortingOptions.ALPHABETICAL_A_TO_Z
   );
   const [listOfProducts, setlistOfProducts] = useState<Product[]>(products);
-  const [minPriceFilter, setMinPriceFilter] = useState<number>(0);
-  const [maxPriceFilter, setMaxPriceFilter] = useState<number>(3000);
-  const [titleFilter, setTitleFilter] = useState<string>("");
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const [filterOptions, setFilterOptions] = useState({
+    titleFilter: "",
+    minPrice: 0,
+    maxPrice: 10000,
+  });
 
   const theme = useTheme();
 
@@ -64,16 +67,42 @@ const ProductsPage = () => {
         return products;
     }
   };
-  const filteredProducts = sortProducts(
-    listOfProducts.filter(
+
+  const filterProducts = (
+    products: Product[],
+    minPrice: number,
+    maxPrice: number,
+    titleFilter: string
+  ) => {
+    return products.filter(
       (product) =>
-        product.price >= minPriceFilter &&
-        product.price <= maxPriceFilter &&
+        product.price >= minPrice &&
+        product.price <= maxPrice &&
         (titleFilter === "" ||
           product.title.toLowerCase().includes(titleFilter.toLowerCase()))
-    ),
-    sortingOption
+    );
+  };
+
+  const filteredProducts = filterProducts(
+    listOfProducts,
+    filterOptions.minPrice,
+    filterOptions.maxPrice,
+    filterOptions.titleFilter
   );
+
+  const handlePriceFilter = (
+    titleFilter: string,
+    minPrice: number,
+    maxPrice: number
+  ) => {
+    setFilterOptions({
+      titleFilter,
+      minPrice,
+      maxPrice,
+    });
+  };
+
+  const sortedProducts = sortProducts(filteredProducts, sortingOption);
 
   const handleLoadMore = async () => {
     if (currCategoryId !== null) {
@@ -97,32 +126,15 @@ const ProductsPage = () => {
   };
 
   useEffect(() => {
-    fetchProductCountByCategory(currCategoryId!);
-  }, [currCategoryId]);
-
-  const fetchProductCountByCategory = async (currCategoryId: number) => {
-    if (currCategoryId !== null) {
-      try {
-        const response = await axios.get<Product[]>(
-          `${API_URL_2}/${currCategoryId}/products`
-        );
-        const totalProductCount = response.data.length;
+    fetchProductCountByCategory(currCategoryId!)
+      .then((data) => {
+        const totalProductCount = data!.length;
         setAllProdCount(totalProductCount);
-      } catch (error) {
+      })
+      .catch((error) => {
         console.log(error);
-      }
-    }
-  };
-
-  const handlePriceFilter = (
-    titleFilter: string,
-    minPrice: number,
-    maxPrice: number
-  ) => {
-    setTitleFilter(titleFilter);
-    setMinPriceFilter(minPrice);
-    setMaxPriceFilter(maxPrice);
-  };
+      });
+  }, [currCategoryId]);
 
   return (
     <Grid
@@ -137,7 +149,10 @@ const ProductsPage = () => {
       }}
     >
       <Grid item xs={12} md={3}>
-        <FilterProducts onFilter={handlePriceFilter} />
+        <FilterProducts
+          onFilter={handlePriceFilter}
+          filterOptions={filterOptions}
+        />
       </Grid>
 
       <Grid item xs={12} md={9}>
@@ -176,7 +191,7 @@ const ProductsPage = () => {
         </Grid>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Products filteredProducts={filteredProducts} />
+            <Products filteredProducts={sortedProducts} />
           </Grid>
           <Grid
             item
@@ -187,7 +202,7 @@ const ProductsPage = () => {
               alignItems: "center",
             }}
           >
-            {filteredProducts.length !== allProdCount && (
+            {listOfProducts.length !== allProdCount && (
               <Box sx={{ m: 1, position: "relative" }}>
                 <Button
                   disabled={isLoading ? true : false}

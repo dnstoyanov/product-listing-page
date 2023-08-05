@@ -8,10 +8,9 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useTheme } from "@mui/material/styles";
-import axios from "axios";
-import { API_URL_2, offset, limitNum } from "../api/api";
+import { fetchProducts } from "../api/api";
 import { useAppContext } from "./Context";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export interface Category {
   createdAt: string;
@@ -37,18 +36,7 @@ const Categories = ({ categories, limit }: CategoriesProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const fetchProducts = async (categoryId: number | null) => {
-    if (categoryId !== null) {
-      try {
-        const response = await axios.get(
-          `${API_URL_2}/${categoryId}/products?offset=${offset}&limit=${limitNum}`
-        );
-        setProducts(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
+  const fetchProductsRef = useRef(fetchProducts);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -65,14 +53,31 @@ const Categories = ({ categories, limit }: CategoriesProps) => {
       setCurrCategoryId(firstCategoryId);
       setSelectedCategory(limitedCategories[0]);
     }
-  }, [selectedCategoryId, limitedCategories, setSelectedCategory]);
+  }, [
+    selectedCategoryId,
+    limitedCategories,
+    setSelectedCategory,
+    setCurrCategoryId,
+  ]);
 
   useEffect(() => {
     if (selectedCategoryId !== null) {
       setCurrCategoryId(selectedCategoryId);
-      fetchProducts(selectedCategoryId);
+      fetchProductsRef
+        .current(selectedCategoryId)
+        .then((data) => setProducts(data!))
+        .catch((error) => console.log(error));
     }
-  }, [selectedCategoryId]);
+  }, [selectedCategoryId, setCurrCategoryId, setProducts]);
+
+  const handleCategoryClick = (categoryId: number, category: Category) => {
+    setCurrCategoryId(categoryId);
+    setSelectedCategory(category);
+    fetchProductsRef
+      .current(categoryId)
+      .then((data) => setProducts(data!))
+      .catch((error) => console.log(error));
+  };
 
   return (
     <>
@@ -97,9 +102,7 @@ const Categories = ({ categories, limit }: CategoriesProps) => {
               md={2}
               key={category.id}
               onClick={() => {
-                setCurrCategoryId(category.id);
-                setSelectedCategory(category);
-                fetchProducts(category.id);
+                handleCategoryClick(category.id, category);
               }}
             >
               <Stack
@@ -129,10 +132,8 @@ const Categories = ({ categories, limit }: CategoriesProps) => {
               <MenuItem
                 key={category.id}
                 onClick={() => {
-                  setCurrCategoryId(category.id);
-                  setSelectedCategory(category);
-                  fetchProducts(category.id);
-                  handleMenuClose(); // Close the menu after selecting a category
+                  handleCategoryClick(category.id, category);
+                  handleMenuClose();
                 }}
               >
                 {category.name}

@@ -1,8 +1,7 @@
 import { AppBar, Stack, Toolbar, useMediaQuery, useTheme } from "@mui/material";
 import logo from "../assets/logo.png";
 import Categories from "./Categories";
-import axios from "axios";
-import { API_URL_2 } from "../api/api";
+import { fetchCategories } from "../api/api";
 import { useEffect } from "react";
 import { useAppContext } from "./Context";
 
@@ -12,17 +11,10 @@ const Header = () => {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  const fetchCategories = async () => {
-    try {
-      const response = await axios.get(`${API_URL_2}`);
-      setCategories(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    fetchCategories()
+      .then((data) => setCategories(data))
+      .catch((error) => console.log(error));
+  }, [setCategories]);
 
   const toolbarStyles = {
     display: "flex",

@@ -10,23 +10,45 @@ import {
 
 interface FilterProps {
   onFilter: (titleFilter: string, minPrice: number, maxPrice: number) => void;
+  filterOptions: {
+    titleFilter: string;
+    minPrice: number;
+    maxPrice: number;
+  };
 }
 
-const FilterProducts: React.FC<FilterProps> = ({ onFilter }) => {
-  const [titleFilter, setTitleFilter] = useState<string>("");
-  const [minPrice, setMinPrice] = useState<number>(0);
-  const [maxPrice, setMaxPrice] = useState<number>(3000);
+const FilterProducts: React.FC<FilterProps> = ({ onFilter, filterOptions }) => {
+  const { titleFilter, minPrice, maxPrice } = filterOptions;
+
+  // const [titleFilter, setTitleFilter] = useState(initialTitleFilter);
+  // const [minPrice, setMinPrice] = useState(initialMinPrice);
+  // const [maxPrice, setMaxPrice] = useState(initialMaxPrice);
+
+  // const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setTitleFilter(event.target.value);
+  // };
+
+  // const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setMinPrice(Number(event.target.value));
+  // };
+
+  // const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setMaxPrice(Number(event.target.value));
+  // };
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTitleFilter(event.target.value);
+    const newTitleFilter = event.target.value;
+    onFilter(newTitleFilter, minPrice, maxPrice);
   };
 
   const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setMinPrice(Number(event.target.value));
+    const newMinPrice = Number(event.target.value);
+    onFilter(titleFilter, newMinPrice, maxPrice);
   };
 
   const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setMaxPrice(Number(event.target.value));
+    const newMaxPrice = Number(event.target.value);
+    onFilter(titleFilter, minPrice, newMaxPrice);
   };
 
   const handleSliderChange = (
@@ -35,8 +57,11 @@ const FilterProducts: React.FC<FilterProps> = ({ onFilter }) => {
     activeThumb: number
   ) => {
     if (Array.isArray(newValue)) {
-      setMinPrice(newValue[0]);
-      setMaxPrice(newValue[1]);
+      // setMinPrice(newValue[0]);
+      // setMaxPrice(newValue[1]);
+      const newMinPrice = newValue[0];
+      const newMaxPrice = newValue[1];
+      onFilter(titleFilter, newMinPrice, newMaxPrice);
     }
   };
 
@@ -90,14 +115,14 @@ const FilterProducts: React.FC<FilterProps> = ({ onFilter }) => {
             value={[Number(minPrice), Number(maxPrice)]}
             onChange={handleSliderChange}
             min={0}
-            max={3000}
+            max={10000}
             step={10}
             valueLabelDisplay="auto"
           />
         </Box>
       </Grid>
 
-      <Grid item xs={12} sm={6}>
+      {/* <Grid item xs={12} sm={6}>
         <Button
           variant="contained"
           color="primary"
@@ -112,7 +137,7 @@ const FilterProducts: React.FC<FilterProps> = ({ onFilter }) => {
         >
           Apply Filter
         </Button>
-      </Grid>
+      </Grid> */}
     </Grid>
   );
 };
