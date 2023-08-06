@@ -18,8 +18,6 @@ interface ContextType {
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
   categories: Category[];
   setCategories: React.Dispatch<React.SetStateAction<Category[]>>;
-  selectedCategory: Category | null;
-  setSelectedCategory: React.Dispatch<React.SetStateAction<Category | null>>;
   offset: number;
   setOffset: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -35,8 +33,6 @@ export const AppContext = createContext<ContextType>({
   categories: [],
   setProducts: () => {},
   setCategories: () => {},
-  selectedCategory: null,
-  setSelectedCategory: () => {},
 });
 
 export const useAppContext = () => useContext(AppContext);
@@ -46,9 +42,6 @@ export const AppContextProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
-    null
-  );
   const [currCategoryId, setCurrCategoryId] = useState<number | null>(null);
   const [offset, setOffset] = useState<number>(initialOffsetValue);
 
@@ -59,8 +52,6 @@ export const AppContextProvider: React.FC<{ children: ReactNode }> = ({
         setProducts,
         categories,
         setCategories,
-        selectedCategory,
-        setSelectedCategory,
         currCategoryId,
         setCurrCategoryId,
         offset,

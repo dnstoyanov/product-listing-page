@@ -31,8 +31,7 @@ const Categories = ({ categories, limit }: CategoriesProps) => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
     null
   );
-  const { setSelectedCategory, setCurrCategoryId, setOffset, setProducts } =
-    useAppContext();
+  const { setCurrCategoryId, setOffset, setProducts } = useAppContext();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -51,14 +50,8 @@ const Categories = ({ categories, limit }: CategoriesProps) => {
       const firstCategoryId = limitedCategories[0].id;
       setSelectedCategoryId(firstCategoryId);
       setCurrCategoryId(firstCategoryId);
-      setSelectedCategory(limitedCategories[0]);
     }
-  }, [
-    selectedCategoryId,
-    limitedCategories,
-    setSelectedCategory,
-    setCurrCategoryId,
-  ]);
+  }, [selectedCategoryId, limitedCategories, setCurrCategoryId]);
 
   useEffect(() => {
     if (selectedCategoryId !== null) {
@@ -72,7 +65,6 @@ const Categories = ({ categories, limit }: CategoriesProps) => {
 
   const handleCategoryClick = (categoryId: number, category: Category) => {
     setCurrCategoryId(categoryId);
-    setSelectedCategory(category);
     setOffset(initialOffsetValue);
     fetchProductsRef
       .current(categoryId)
