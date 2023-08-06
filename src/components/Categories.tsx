@@ -10,7 +10,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useTheme } from "@mui/material/styles";
 import { fetchProducts } from "../api/api";
 import { useAppContext, initialOffsetValue } from "./Context";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 export interface Category {
   createdAt: string;
@@ -28,14 +28,11 @@ interface CategoriesProps {
 const Categories = ({ categories, limit }: CategoriesProps) => {
   const theme = useTheme();
   const limitedCategories = categories.slice(0, limit);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
-    null
-  );
-  const { setCurrCategoryId, setOffset, setProducts } = useAppContext();
+
+  const { currCategoryId, setCurrCategoryId, setOffset, setProducts } =
+    useAppContext();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-
-  const fetchProductsRef = useRef(fetchProducts);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -46,28 +43,25 @@ const Categories = ({ categories, limit }: CategoriesProps) => {
   };
 
   useEffect(() => {
-    if (selectedCategoryId === null && limitedCategories.length > 0) {
+    if (currCategoryId === null && limitedCategories.length > 0) {
       const firstCategoryId = limitedCategories[0].id;
-      setSelectedCategoryId(firstCategoryId);
       setCurrCategoryId(firstCategoryId);
     }
-  }, [selectedCategoryId, limitedCategories, setCurrCategoryId]);
+  }, [currCategoryId, limitedCategories, setCurrCategoryId]);
 
   useEffect(() => {
-    if (selectedCategoryId !== null) {
-      setCurrCategoryId(selectedCategoryId);
-      fetchProductsRef
-        .current(selectedCategoryId)
+    if (currCategoryId !== null) {
+      setCurrCategoryId(currCategoryId);
+      fetchProducts(currCategoryId)
         .then((data) => setProducts(data!))
         .catch((error) => console.log(error));
     }
-  }, [selectedCategoryId, setCurrCategoryId, setProducts]);
+  }, [currCategoryId, setCurrCategoryId, setProducts]);
 
   const handleCategoryClick = (categoryId: number, category: Category) => {
     setCurrCategoryId(categoryId);
     setOffset(initialOffsetValue);
-    fetchProductsRef
-      .current(categoryId)
+    fetchProducts(categoryId)
       .then((data) => setProducts(data!))
       .catch((error) => console.log(error));
   };

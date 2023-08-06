@@ -17,12 +17,12 @@ import { API_URL, fetchProductCountByCategory, limitNum } from "../api/api";
 import axios from "axios";
 import { Product, useAppContext } from "./Context";
 
-const SortingOptions = {
-  ALPHABETICAL_A_TO_Z: "ALPHABETICAL_A_TO_Z",
-  ALPHABETICAL_Z_TO_A: "ALPHABETICAL_Z_TO_A",
-  PRICE_ASCENDING: "PRICE_ASCENDING",
-  PRICE_DESCENDING: "PRICE_DESCENDING",
-};
+enum SortingOptions {
+  ALPHABETICAL_A_TO_Z = "ALPHABETICAL_A_TO_Z",
+  ALPHABETICAL_Z_TO_A = "ALPHABETICAL_Z_TO_A",
+  PRICE_ASCENDING = "PRICE_ASCENDING",
+  PRICE_DESCENDING = "PRICE_DESCENDING",
+}
 
 const ProductsPage = () => {
   const { products, currCategoryId, offset, setOffset } = useAppContext();
