@@ -17,9 +17,6 @@ export const fetchProducts = async (
       const response = await axios.get(
         `${API_URL}/${categoryId}/products?offset=${offset}&limit=${limitNum}`
       );
-
-      console.log(response.data);
-
       return response.data;
     } catch (error) {
       console.log(error);
@@ -30,8 +27,6 @@ export const fetchProducts = async (
 export const fetchCategories = async () => {
   try {
     const response = await axios.get(`${API_URL}`);
-    console.log(response.data);
-
     return response.data;
   } catch (error) {
     console.log(error);
