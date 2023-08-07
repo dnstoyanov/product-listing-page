@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Products from "./Products";
 import SortField from "./SortField";
 import CategoryDescription from "./CategoryDescription";
@@ -13,16 +13,13 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { API_URL, fetchProductCountByCategory, limitNum } from "../api/api";
-import axios from "axios";
-import { Product, useAppContext } from "./Context";
-
-enum SortingOptions {
-  ALPHABETICAL_A_TO_Z = "ALPHABETICAL_A_TO_Z",
-  ALPHABETICAL_Z_TO_A = "ALPHABETICAL_Z_TO_A",
-  PRICE_ASCENDING = "PRICE_ASCENDING",
-  PRICE_DESCENDING = "PRICE_DESCENDING",
-}
+import {
+  fetchProductCountByCategory,
+  fetchProducts,
+  limitNum,
+} from "../api/api";
+import { Product, initialOffsetValue, useAppContext } from "./Context";
+import { SortingOptions, filterProducts, sortProducts } from "./utils";
 
 const ProductsPage = () => {
   const { products, currCategoryId, offset, setOffset } = useAppContext();
@@ -52,36 +49,6 @@ const ProductsPage = () => {
     setSortingOption(selectedOption);
   };
 
-  const sortProducts = (products: Product[], sortingOption: string) => {
-    switch (sortingOption) {
-      case SortingOptions.ALPHABETICAL_A_TO_Z:
-        return products.sort((a, b) => a.title.localeCompare(b.title));
-      case SortingOptions.ALPHABETICAL_Z_TO_A:
-        return products.sort((a, b) => b.title.localeCompare(a.title));
-      case SortingOptions.PRICE_ASCENDING:
-        return products.sort((a, b) => a.price - b.price);
-      case SortingOptions.PRICE_DESCENDING:
-        return products.sort((a, b) => b.price - a.price);
-      default:
-        return products;
-    }
-  };
-
-  const filterProducts = (
-    products: Product[],
-    minPrice: number,
-    maxPrice: number,
-    titleFilter: string
-  ) => {
-    return products.filter(
-      (product) =>
-        product.price >= minPrice &&
-        product.price <= maxPrice &&
-        (titleFilter === "" ||
-          product.title.toLowerCase().includes(titleFilter.toLowerCase()))
-    );
-  };
-
   const filteredProducts = filterProducts(
     listOfProducts,
     filterOptions.minPrice,
@@ -106,20 +73,19 @@ const ProductsPage = () => {
   const handleLoadMore = async () => {
     if (currCategoryId !== null) {
       try {
-        setOffset(offset + 10);
+        setOffset(offset + initialOffsetValue);
         setIsLoading(true);
-        console.log("fff");
-        const response = await axios.get<Product[]>(
-          `${API_URL}/${currCategoryId}/products?offset=${offset}&limit=${limitNum}`
-        );
 
-        const newProducts = response.data.filter((value, index, self) => {
+        const fetchedProducts =
+          (await fetchProducts(currCategoryId, offset, limitNum)) || [];
+
+        const newProducts = fetchedProducts.filter((value, index, self) => {
           return self.findIndex((product) => product.id === value.id) === index;
         });
         setlistOfProducts((prevProducts) => [...prevProducts, ...newProducts]);
-        setIsLoading(false);
       } catch (error) {
         console.log(error);
+      } finally {
         setIsLoading(false);
       }
     }
@@ -216,7 +182,7 @@ const ProductsPage = () => {
                       cursor: "pointer",
                     },
                   }}
-                  onClick={() => handleLoadMore()}
+                  onClick={handleLoadMore}
                 >
                   Load More
                 </Button>

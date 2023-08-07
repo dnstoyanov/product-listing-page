@@ -14,7 +14,7 @@ export const fetchProducts = async (
 ) => {
   if (categoryId !== null) {
     try {
-      const response = await axios.get(
+      const response = await axios.get<Product[]>(
         `${API_URL}/${categoryId}/products?offset=${offset}&limit=${limitNum}`
       );
       return response.data;

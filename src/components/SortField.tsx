@@ -5,6 +5,7 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material/";
+import { SortingOptions } from "./utils";
 
 interface SortFieldProps {
   sortingOption: string;
@@ -24,10 +25,18 @@ const SortField: React.FC<SortFieldProps> = ({
     <Box sx={{ minWidth: 120 }}>
       <FormControl fullWidth>
         <Select id="simple-sort" onChange={handleChange} value={sortingOption}>
-          <MenuItem value="ALPHABETICAL_A_TO_Z">Alphabetical A-Z</MenuItem>
-          <MenuItem value="ALPHABETICAL_Z_TO_A">Alphabetical Z-A</MenuItem>
-          <MenuItem value="PRICE_ASCENDING">Price ascending</MenuItem>
-          <MenuItem value="PRICE_DESCENDING">Price descending</MenuItem>
+          <MenuItem value={SortingOptions.ALPHABETICAL_A_TO_Z}>
+            Alphabetical A-Z
+          </MenuItem>
+          <MenuItem value={SortingOptions.ALPHABETICAL_Z_TO_A}>
+            Alphabetical Z-A
+          </MenuItem>
+          <MenuItem value={SortingOptions.PRICE_ASCENDING}>
+            Price ascending
+          </MenuItem>
+          <MenuItem value={SortingOptions.PRICE_DESCENDING}>
+            Price descending
+          </MenuItem>
         </Select>
       </FormControl>
     </Box>

@@ -58,7 +58,7 @@ const Categories = ({ categories, limit }: CategoriesProps) => {
     }
   }, [currCategoryId, setCurrCategoryId, setProducts]);
 
-  const handleCategoryClick = (categoryId: number, category: Category) => {
+  const handleCategoryClick = (categoryId: number) => {
     setCurrCategoryId(categoryId);
     setOffset(initialOffsetValue);
     fetchProducts(categoryId)
@@ -89,7 +89,7 @@ const Categories = ({ categories, limit }: CategoriesProps) => {
               md={2}
               key={category.id}
               onClick={() => {
-                handleCategoryClick(category.id, category);
+                handleCategoryClick(category.id);
               }}
             >
               <Stack
@@ -119,7 +119,7 @@ const Categories = ({ categories, limit }: CategoriesProps) => {
               <MenuItem
                 key={category.id}
                 onClick={() => {
-                  handleCategoryClick(category.id, category);
+                  handleCategoryClick(category.id);
                   handleMenuClose();
                 }}
               >

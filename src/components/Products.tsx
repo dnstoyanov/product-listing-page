@@ -20,8 +20,8 @@ const Products: React.FC<ProductsProps> = ({ filteredProducts }) => {
 
   return (
     <Grid container spacing={2}>
-      {filteredProducts.map((product) => (
-        <Grid key={product.id} item xs={12} sm={6} md={4} xl={2}>
+      {filteredProducts.map(({ id, images, title, description, price }) => (
+        <Grid key={id} item xs={12} sm={6} md={4} xl={2}>
           <Card
             sx={{
               height: "100%",
@@ -42,16 +42,16 @@ const Products: React.FC<ProductsProps> = ({ filteredProducts }) => {
                   <CardMedia
                     component="img"
                     height="240"
-                    image={product.images[0]}
-                    alt={product.title}
+                    image={images[0]}
+                    alt={title}
                     sx={{ borderRadius: 2 }}
                   />
                   <Typography variant="h6" component="div">
-                    {product.title}
+                    {title}
                   </Typography>
 
                   <Typography variant="body2" color="text.secondary">
-                    {product.description}
+                    {description}
                   </Typography>
                 </Stack>
 
@@ -61,7 +61,7 @@ const Products: React.FC<ProductsProps> = ({ filteredProducts }) => {
                   justifyContent="space-between"
                 >
                   <Typography variant="body2" color="#7ec33c" fontSize={30}>
-                    ${product.price}
+                    ${price}
                   </Typography>
                   <Button
                     sx={{
@@ -72,7 +72,7 @@ const Products: React.FC<ProductsProps> = ({ filteredProducts }) => {
                         cursor: "pointer",
                       },
                     }}
-                    onClick={() => handleAddToCart()}
+                    onClick={handleAddToCart}
                   >
                     Order Now
                   </Button>
