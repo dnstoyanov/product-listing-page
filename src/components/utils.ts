@@ -13,13 +13,13 @@ export const filterProducts = (
   maxPrice: number,
   titleFilter: string
 ) =>
-  products.filter(
-    ({ price, title }) =>
-      price >= minPrice &&
-      price <= maxPrice &&
-      (titleFilter === "" ||
-        title.toLowerCase().includes(titleFilter.toLowerCase()))
-  );
+  products
+    .filter(({ price }) => price >= minPrice && price <= maxPrice)
+    .filter(
+      ({ title }) =>
+        titleFilter === "" ||
+        title.toLowerCase().includes(titleFilter.toLowerCase())
+    );
 
 export const sortProducts = (products: Product[], sortingOption: string) => {
   switch (sortingOption) {
