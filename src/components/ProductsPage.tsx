@@ -205,7 +205,7 @@ const ProductsPage = () => {
             {listOfProducts.length !== allProdCount && (
               <Box sx={{ m: 1, position: "relative" }}>
                 <Button
-                  disabled={isLoading ? true : false}
+                  disabled={isLoading}
                   sx={{
                     backgroundColor: isLoading ? "gray" : "#92c736",
                     marginTop: 5,
